@@ -1,5 +1,6 @@
 import { Search, Plus } from "lucide-react";
 import { useNavigate } from "react-router";
+import Footer from "~/components/footer/Footer";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -20,7 +21,7 @@ const Dashboard = () => {
             Add Site
           </button>
 
-          
+          <Footer />
         </div>
       </div>
     </div>

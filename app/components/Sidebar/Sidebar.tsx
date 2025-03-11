@@ -36,7 +36,7 @@ const Sidebar: React.FC = () => {
   return (
     <motion.div
       animate={{ width: isMini ? 60 : 200 }}
-      className="h-screen bg-gray-900 text-white p-3 flex flex-col transition-all duration-300 shadow-lg"
+      className="h-screen bg-gray-900 text-white p-3 flex flex-col transition-all duration-300 shadow-lg z-[+2]"
     >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
