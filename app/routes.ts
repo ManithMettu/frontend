@@ -6,6 +6,8 @@ export default [
     { path: "staffbook", file: "pages/Staffbook.tsx" },
     { path: "attendance", file: "pages/Attendance.tsx" },
     { path: "payments", file: "pages/Payments.tsx" },
-    { path: "add-employee", file: "pages/AddEmployee.tsx" },
+    { path: "add-employee", file: "pages/EmployeeOnboarding.tsx" },
+    { path: "customer", file: "pages/Customer.tsx" },
+    { path: "add-customer", file: "pages/AddCustomer.tsx" },
   ]),
 ] satisfies RouteConfig;

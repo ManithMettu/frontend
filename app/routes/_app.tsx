@@ -1,3 +1,4 @@
+{/*_app.tsx*/}
 import { Outlet } from "react-router";
 import Sidebar from "~/components/Sidebar/Sidebar";
 import Footer from "~/components/footer/Footer";
@@ -7,7 +8,7 @@ export default function AppLayout() {
     <div className="flex">
       <Sidebar />
       
-      <main className="flex-grow p-6">
+      <main className="flex-grow p-0">
         <Outlet />
       </main>
       

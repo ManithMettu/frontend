@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
     { to: "", icon: <Axe size={18} />, label: "Inventory Book" },
     { to: "", icon: <Handshake size={18} />, label: "Vendor Book" },
     { to: "", icon: <PersonStanding size={18} />, label: "Contractors Book" },
-    { to: "", icon: <ShieldUser size={18} />, label: "Customer Book" },
+    { to: "/customer", icon: <ShieldUser size={18} />, label: "Customer Book" },
     { to: "", icon: <ClipboardMinus size={18} />, label: "Reports" },
   ];
 
