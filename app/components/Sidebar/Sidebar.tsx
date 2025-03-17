@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useLocation } from "react-router";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
   Users,
@@ -15,8 +15,9 @@ import {
   CircleChevronLeft,
   LogOut,
 } from "lucide-react";
+import logo from './logo.png';
 
-const Sidebar: React.FC = () => {
+const Sidebar: React.FC<{ onMiniChange: (isMini: boolean) => void }> = ({ onMiniChange }) => {
   const location = useLocation();
   const [isMini, setIsMini] = useState<boolean>(false);
   const [filter, setFilter] = useState<string>("");
@@ -33,102 +34,166 @@ const Sidebar: React.FC = () => {
     { to: "", icon: <ClipboardMinus size={18} />, label: "Reports" },
   ];
 
+  // Update parent component when sidebar state changes
+  const handleMiniToggle = () => {
+    const newMiniState = !isMini;
+    setIsMini(newMiniState);
+    onMiniChange(newMiniState);
+  };
+
   return (
     <motion.div
-      animate={{ width: isMini ? 60 : 200 }}
-      className="h-screen bg-gray-900 text-white p-3 flex flex-col transition-all duration-300 shadow-lg z-[+2]"
+      initial={false}
+      animate={{ 
+        width: isMini ? 60 : 200,
+        transition: { duration: 0.3, ease: "easeInOut" }
+      }}
+      className="min-h-screen h-full bg-gray-900 text-white p-3 flex flex-col shadow-lg z-[+2] fixed"
     >
       {/* Header Section */}
       <div className="flex items-center justify-between mb-4">
-        {/* Logo */}
-        <motion.img
-        
-          src="./logo.png"
-          alt="Logo"
-          animate={{ width: isMini ? 25 : 35 }}
-          className="rounded-md"
-        />
+        <motion.div className="flex items-center gap-2">
+          <motion.img
+            src={logo}
+            alt="Logo"
+            initial={{ width: isMini ? 25 : 35 }}
+            animate={{ 
+              width: isMini ? 25 : 35,
+              transition: { 
+                duration: 0.2,
+                ease: "easeOut"
+              }
+            }}
+            className="rounded-md min-w-[25px]"
+          />
+          
+          <AnimatePresence>
+            {!isMini && (
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.2 }}
+                className="flex flex-col items-start"
+              >
+                <span className="text-lg font-bold text-blue-400">
+                  Payments<span className="text-blue-500">360</span>
+                </span>
+                <span className="text-xs font-semibold text-red-500 self-end">
+                  By ForeFold AI
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
 
-        {/* Sidebar Title (Hidden in Mini Mode) */}
-        {!isMini && (
-          <motion.div className="flex flex-col items-start">
-            <motion.h1 className="text-lg font-bold text-blue-400 transition-all">
-              Payments<span className="text-blue-500">360</span>
-            </motion.h1>
-            <motion.h2 className="text-xs font-semibold text-red-500 self-end">
-              By ForeFold AI
-            </motion.h2>
-          </motion.div>
-        )}
-
-        {/* Toggle Button */}
         <motion.button
+          whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          onClick={() => setIsMini(!isMini)}
-          className="p-1 rounded-full bg-blue-400 hover:bg-blue-500 transition-all"
+          onClick={handleMiniToggle}
+          className="p-1 rounded-full bg-blue-400 hover:bg-blue-500 transition-colors"
         >
           {isMini ? <CircleChevronRight size={18} /> : <CircleChevronLeft size={18} />}
         </motion.button>
       </div>
 
-      {/* Filter Dropdown */}
-      {!isMini && (
-        <select
-          className="w-full p-1 mb-4 bg-gray-800 text-white rounded-md border border-gray-700 text-sm"
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="">All</option>
-          <option value="">Site 1</option>
-          <option value="">Site 2</option>
-          <option value="">Site 3</option>
-        </select>
-      )}
+      <AnimatePresence>
+        {!isMini && (
+          <motion.select
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            className="w-full p-1 mb-4 bg-gray-800 text-white rounded-md border border-gray-700 text-sm"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
+            <option value="">All</option>
+            <option value="">Site 1</option>
+            <option value="">Site 2</option>
+            <option value="">Site 3</option>
+          </motion.select>
+        )}
+      </AnimatePresence>
 
-      {/* Navigation Links */}
       <nav className="flex flex-col space-y-1">
         {menuItems
           .filter(({ label }) =>
             filter ? label.toLowerCase().includes(filter.toLowerCase()) : true
           )
           .map(({ to, icon, label }) => (
-            <div key={label} className="relative group">
+            <motion.div
+              key={label}
+              className="relative group"
+              whileHover={{ scale: 1.02 }}
+            >
               <Link
                 to={to}
                 className={`flex items-center p-2 rounded-lg text-xs transition-all duration-300 ${
                   location.pathname === to ? "bg-blue-400" : "hover:bg-white/10"
                 } ${isMini ? "justify-center" : "space-x-2"}`}
               >
-                {/* Icon */}
-                <span className="text-white">{icon}</span>
-                {/* Label (Hidden in Mini Mode) */}
-                {!isMini && <span>{label}</span>}
+                <motion.span
+                  animate={{ scale: location.pathname === to ? 1.1 : 1 }}
+                  className="text-white"
+                >
+                  {icon}
+                </motion.span>
+                <AnimatePresence>
+                  {!isMini && (
+                    <motion.span
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                    >
+                      {label}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </Link>
 
-              {/* Tooltip (Only in Mini Mode) */}
               {isMini && (
-                <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+                <motion.div
+                  initial={{ opacity: 0, x: 10 }}
+                  whileHover={{ opacity: 1, x: 0 }}
+                  className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded shadow-md whitespace-nowrap z-50"
+                >
                   {label}
-                </div>
+                </motion.div>
               )}
-            </div>
+            </motion.div>
           ))}
       </nav>
 
-      {/* Logout Button */}
-      <div
+      <motion.div
+        whileHover={{ scale: 1.02 }}
         className={`mt-auto flex items-center p-2 rounded-lg cursor-pointer transition-all duration-300 hover:bg-white/10 relative group text-xs ${
           isMini ? "justify-center" : "space-x-2"
         }`}
       >
-        <LogOut size={18} className="text-white" />
-        {!isMini && <span>Logout</span>}
+        <motion.span whileHover={{ rotate: 180 }} className="text-white">
+          <LogOut size={18} />
+        </motion.span>
+        <AnimatePresence>
+          {!isMini && (
+            <motion.span
+              initial={{ opacity: 0, x: -10 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -10 }}
+            >
+              Logout
+            </motion.span>
+          )}
+        </AnimatePresence>
         {isMini && (
-          <div className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded shadow-md opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">
+          <motion.div
+            initial={{ opacity: 0, x: 10 }}
+            whileHover={{ opacity: 1, x: 0 }}
+            className="absolute left-full ml-2 top-1/2 -translate-y-1/2 bg-gray-800 text-white text-xs font-semibold px-2 py-1 rounded shadow-md whitespace-nowrap z-50"
+          >
             Logout
-          </div>
+          </motion.div>
         )}
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
